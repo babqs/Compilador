@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Tradutor </title>
+</head>
+
+<body>
+
+    <!--<div>
+        <input type="text" name="input" />
+        <button class="botao">Infix</button>
+    </div>-->
+    <div>
+        <!--<input type="text" placeholder="Coloque sua entrada aqui." id="entrada"></input>-->
+        <textarea id="textoEntrada" rows="10" cols="40" placeholder="Escreva sua entrada aqui."></textarea>
+        <p id="teste">
+            <button onclick="funcaoBotao()">Enter</button>
+        </p>
+    </div>
+
+    <script>
+        
+        var lookahead;
+        var count = 0;
+        var input;
+        
+        function funcaoBotao() {
+            input = document.querySelector('#textoEntrada').value;
+            console.log(input);
+            //console.log(typeof input);
+            //console.log(input.length);
+            for(var i = 0; i <= input.length; i++){
+                lookahead = nextToken();
+                expr();
+            }
+        }
+
+        //Analisador léxico
+        function nextToken() {
+            if (count == input.length)
+            return;
+            else
+                return input[count++];
+        }
+
+        //Analisador sintático
+        function expr() {
+            term();
+            rest();
+        }
+
+        function rest() {
+            if (lookahead === '-') {
+                match('-');
+                term();
+                console.log('-');
+                rest();
+            }
+            else if (lookahead === '+') {
+                match('+');
+                term();
+                console.log('+');
+                rest();
+            }
+            else if (lookahead == input.length);
+            //correto
+            else;
+            //sintax error
+        }
+
+        function term() {
+            switch (lookahead) {
+                case '0':
+                    match('0');
+                    console.log('0');
+                    break;
+
+                case '1':
+                    match('1');
+                    console.log('1');
+                    break;
+
+                case '2':
+                    match('2');
+                    console.log('2');
+                    break;
+
+                case '3':
+                    match('3');
+                    console.log('3');
+                    break;
+
+                case '4':
+                    match('4');
+                    console.log('4');
+                    break;
+
+                case '5':
+                    match('5');
+                    console.log('5');
+                    break;
+
+                case '6':
+                    match('6');
+                    console.log('6');
+                    break;
+
+                case '7':
+                    match('7');
+                    console.log('7');
+                    break;
+
+                case '8':
+                    match('8');
+                    console.log('8');
+                    break;
+
+                case '9':
+                    match('9');
+                    console.log('9');
+                    break;
+
+                default:
+                    console.log('Number expected');
+                    break;
+            }
+        }
+
+        function match(c) {
+            var c;
+            if (lookahead === c) {
+                lookahead = nextToken();
+            }
+            else {
+                var s = "Found" + toString(lookahead) + "but expected" + toString(c);
+                console.error(s);
+
+            }
+        }
+
+    </script>
+</body>
+
+</html>
