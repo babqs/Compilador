@@ -9,14 +9,10 @@
 
 <body>
 
-    <!--<div>
-        <input type="text" name="input" />
-        <button class="botao">Infix</button>
-    </div>-->
     <div>
-        <!--<input type="text" placeholder="Coloque sua entrada aqui." id="entrada"></input>-->
-        <textarea id="textoEntrada" rows="10" cols="40" placeholder="Escreva sua entrada aqui."></textarea>
-        <p id="teste">
+        <!-- <input type="text" placeholder="Coloque sua entrada aqui." id="textoEntrada"></input> -->
+        <textarea id="textoEntrada" rows="10" cols="40" placeholder="Enter your input here."></textarea>
+        <p>
             <button onclick="funcaoBotao()">Enter</button>
         </p>
     </div>
@@ -26,13 +22,13 @@
         var lookahead;
         var count = 0;
         var input;
+        var EOF;
         
         function funcaoBotao() {
             input = document.querySelector('#textoEntrada').value;
             console.log(input);
-            //console.log(typeof input);
-            //console.log(input.length);
-            for(var i = 0; i <= input.length; i++){
+            console.log(input.length);
+            for(var i = 0; i <= input[count]; i++){
                 lookahead = nextToken();
                 expr();
             }
@@ -40,8 +36,10 @@
 
         //Analisador léxico
         function nextToken() {
-            if (count == input.length)
-            return;
+            if (count == input.length){
+                EOf = true;
+                return EOF;
+            }
             else
                 return input[count++];
         }
@@ -65,9 +63,11 @@
                 console.log('+');
                 rest();
             }
-            else if (lookahead == input.length);
+            else if (lookahead == input[count]);
             //correto
-            else;
+            else{
+                alert('Sytax Error');
+            }
             //sintax error
         }
 
@@ -124,7 +124,7 @@
                     break;
 
                 default:
-                    console.log('Number expected');
+                    alert('Number expected');
                     break;
             }
         }
