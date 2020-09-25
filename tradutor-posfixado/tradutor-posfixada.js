@@ -3,8 +3,8 @@ let pos = 0;
 var peek = ' ';
 var Type;
 var Value;
-const EOF =  true;
 var lookahead = token;
+var result;
 //tipo de cada elemento dentro do objeto Token, valores somente para leitura
 const NUMBER = 256;
 const SYMBOL = 257;
@@ -12,16 +12,44 @@ const SYMBOL = 257;
 var token = {
     Type,
     Value,
+
+    //lexer
+    scan: function () {
+        for (; ; peek = nextChar()) {
+            if (peek !== ' ' && peek !== '\t' && peek !== '\n')
+                break;
+        }
+
+        if (isNumber(peek)) {
+            var v = 0;
+            let p = parseInt(peek);
+            do {
+                    v = 10 * v + p,
+                    peek = nextChar();
+            } while (isNumber(peek));
+
+            token["Type"] = NUMBER;
+            token["Value"] = v;
+            return token;
+
+        }
+        token["Type"] = SYMBOL;
+        token["Value"] = peek;
+        peek = ' ';
+        return token;
+    }
 };
 
 function funcaoBotao() {
     input = document.querySelector('#textoEntrada').value;
-    //console.log(input[length]);
-    //for (let i of input) {
-      for(var i = 0; i <= input[pos]; i++){  
-        lookahead = scan();
+    console.log("INFIX: " + input);
+    console.log("Tamanho da entrada: " + input.length);
+    console.log("POSFIX: ");
+    for (var i = 0; i <= input[pos]; i++) {
+        lookahead = token.scan();
         expr();
     }
+    console.log("RESULTADO DA EXPRESSÃO: " + result);
 }
 
 
@@ -31,88 +59,56 @@ function nextChar() {
     return input[pos++];
 }
 
-//lexer
-function scan() {
-    for (; ; peek = nextChar()) {
-        if (peek != ' ' && peek != '\t' && peek != '\n')
-            break;
-    }
-
-    if (isNumber(peek)) {
-        var v = 0;
-        let p = parseInt(peek);
-        
-    do{
-        v = 10 * v + p,
-        peek = nextChar();
-    } while(isNumber(peek));
-
-        token["Type"] = NUMBER;
-        token["Value"] = v;
-        return token;
-
-    }
-    //else{
-    token["Type"] = SYMBOL;
-    token["Value"] = peek;
-    peek = ' ';
-    return token;
-   // }
-}
-
 function match(t) {
-    if( lookahead["Type"] == t["Type"] && lookahead["Value"] == t.Value){
-        lookahead = scan();
-}
-    else{
-        alert("Values do not match!");
+    if (lookahead["Type"] == t["Type"] && lookahead["Value"] === t.Value) {
+        lookahead = token.scan();
+    }
+    else {
+        var s = "Syntax Error. Values do not match!";
+        console.log(s);
     }
 }
 
 function term() {
+    var lk = 0;
     if (lookahead["Type"] == NUMBER) {
+        lk = lookahead["Value"];
         console.log(lookahead["Value"]);
         match(lookahead);
+        return lk;
     }
     else {
-        alert("Syntax Error! " + lookahead["Value"] + " it's not a number.");
+        var s = "Syntax Error! " + lookahead["Value"] + " it's not a number.";
+        console.error(s);
     }
 }
 
 function expr() {
-    term();
-    while(true){
-    if (lookahead["Type"] == SYMBOL) {
-        if (lookahead["Value"] == '+') {
-            match(lookahead);
-            term();
-            console.log('+');
-        }
-        else if (lookahead["Value"] == '-') {
-            match(lookahead);
-            term();
-            console.log('-');
-        }
-        else if (lookahead["Value"] == '*') {
-            match(lookahead);
-            term();
-            console.log('*');
-        }
-        else if (lookahead["Value"] == '\/') {
-            match(lookahead);
-            term();
-            console.log('\/');
+    result = term();
+    while (true) {
+        if (lookahead["Type"] == SYMBOL) {
+            if (lookahead["Value"] === '+') {
+                match(lookahead);
+                var sum = term();
+                console.log('+');
+                result += sum;
+            }
+            else if (lookahead["Value"] === '-') {
+                match(lookahead);
+                var sub = term();
+                console.log('-');
+                result -= sub;
+            }
+            else {
+                return result;
+            }
         }
         else {
-            return lookahead["Value"];  
+            return result;
         }
     }
-    else {
-        //return;
-        alert("Syxtax error");
-    }
 }
-}
+
 function isNumber(n) {
     return !isNaN(parseInt(n)) && isFinite(n);
 }
