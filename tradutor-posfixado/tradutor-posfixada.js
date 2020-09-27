@@ -3,7 +3,7 @@ let pos = 0;
 var peek = ' ';
 var Type;
 var Value;
-var lookahead = token;
+var lookahead;
 var result;
 //tipo de cada elemento dentro do objeto Token, valores somente para leitura
 const NUMBER = 256;
@@ -83,8 +83,7 @@ function term() {
     }
 }
 
-function expr() {
-    result = term();
+function rest() {
     while (true) {
         if (lookahead["Type"] == SYMBOL) {
             if (lookahead["Value"] === '+') {
@@ -108,6 +107,12 @@ function expr() {
         }
     }
 }
+
+function expr(){
+    result = term();
+    rest();
+}
+
 
 function isNumber(n) {
     return !isNaN(parseInt(n)) && isFinite(n);
